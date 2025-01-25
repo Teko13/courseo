@@ -5,9 +5,9 @@ import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import ThemedText from "./ThemedText";
 const colors = useColor();
 
-export function ProductCard({id, name, quantity, price, isWeighable, isAdd}) {
+export function ProductCard({id, name, quantity, price, isWeighable}) {
     const [nameState, setName] = useState(name);
-    const [isAddState, setIsAdd] = useState(isAdd ?? false);
+    const [isAddState, setIsAdd] = useState(false);
     const [quantityState, setQuantity] = useState(quantity);
     const [priceState, setPrice] = useState(price ?? null);
     const [isWeighableState, setIsWeighable] = useState(isWeighable);
