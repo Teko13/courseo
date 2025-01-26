@@ -5,7 +5,7 @@ import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import ThemedText from "./ThemedText";
 const colors = useColor();
 
-export function ProductCard({id, name, quantity, price, isWeighable}) {
+export function ProductCard({id, name, quantity, price, isWeighable, removeProduct}) {
     const [nameState, setName] = useState(name);
     const [isAddState, setIsAdd] = useState(false);
     const [quantityState, setQuantity] = useState(quantity);
@@ -36,9 +36,9 @@ export function ProductCard({id, name, quantity, price, isWeighable}) {
                 </ThemedText>
             </View>
             <View style={{width: "10%", margin: "auto"}}>
-                <View style={{borderRadius: 7, backgroundColor: colors.danger, padding: 3.75}}>
+                <Pressable onPress={() => removeProduct(id)} style={{borderRadius: 7, backgroundColor: colors.danger, padding: 3.75}}>
                     <Image source={require("@/assets/images/remove.png")} style={{width: 25, height: 27}} />
-                </View>
+                </Pressable>
             </View>
         </Card>
     )

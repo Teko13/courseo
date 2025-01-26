@@ -3,9 +3,10 @@ import { ProductCard } from "@/components/Product";
 import RadioButton from "@/components/RadioButton";
 import { ThemedButton } from "@/components/ThemedButton";
 import ThemedText from "@/components/ThemedText";
+import { createProduct, deleteProduct, getProducts } from "@/db/query";
 import useColor from "@/hook/useColor";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -22,20 +23,48 @@ export default function List() {
     const [formData, setFormData] = useState(initFormValue);
     const [visibility, setVisibility] = useState(false);
     const [productData, setProductData] = useState([]);
-    const handleSubmit = () => {
+    const [refreshList, setRefreshList] = useState(true);
+    const handleSubmit = async () => {
         if(formData.quantity <= 0) {
             Alert.alert("Attention", "Ajoutez une quantité a votre produit")
         } else if(formData.name == "") {
             Alert.alert("Attention", "Présisez le nom de votre produit");
         } else {
-            setProductData((prevProduct) => ([...prevProduct, formData]))
-            setFormData(initFormValue);
-            setVisibility(false);
+            try {
+                await createProduct(formData);
+                setFormData(initFormValue);
+                setVisibility(false);
+                setRefreshList(!refreshList);
+            } catch (error) {
+              console.error("probleme de creation", error);
+                
+            }
         }
     }
     const handleWeighableOptionSelect = (option) => {
         setFormData((prevFormData) => ({...prevFormData, isWeighable: option}))
     };
+    const removeProduct = async (id) => {
+        try {
+            await deleteProduct(id);
+            setRefreshList(!refreshList);
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      setProductData(await getProducts());
+    } catch (error) {
+      console.error("probleme de récuperation", error);
+    }
+  };
+
+  fetchProducts();
+}, [refreshList]);
+
+    
     const params = useLocalSearchParams();
     return (
         <SafeAreaView style={styles.container}>
@@ -102,7 +131,13 @@ export default function List() {
             <Card style={{flex: 1, padding: 15, backgroundColor: colors.background, gap: 25, flexDirection: "colum"}}>
                 <FlatList 
                 data={productData}
-                renderItem={({item}) => ( <ProductCard name={item.name} quantity={item.quantity} isWeighable={item.isWeighable} />)}
+                renderItem={({item}) => ( <ProductCard 
+                    id={item.id} 
+                    name={item.name} 
+                    quantity={item.quantity} 
+                    isWeighable={item.isWeighable}
+                    removeProduct={removeProduct}
+                    />)}
                 keyExtractor={(product) => product.name} 
                 contentContainerStyle={{gap: 10}}
                 />
