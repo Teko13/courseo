@@ -21,4 +21,8 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         fontSize: 24
     },
+    textThin: {
+        fontWeight: 300,
+        fontSize: 13
+    }
 })

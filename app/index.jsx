@@ -1,6 +1,7 @@
 import { MainView, MainViewCard } from "@/components/MainView";
 import { ThemedButton } from "@/components/ThemedButton";
 import ThemedText from "@/components/ThemedText";
+import { resetDatabase } from "@/db/database";
 import useColor from "@/hook/useColor";
 import { Link } from "expo-router";
 import { useState } from "react";
@@ -58,7 +59,7 @@ export default function Index() {
               <Link
                 href={{
                   pathname: "/list/[list]",
-                  params: { list: listName || "Liste sans nom" },
+                  params: { listName: listName || "Liste sans nom" },
                 }}
                 asChild
               >
@@ -73,6 +74,15 @@ export default function Index() {
                   </ThemedButton>
                 </Pressable>
               </Link>
+              <Pressable onPress={() => resetDatabase()}>
+                  <ThemedButton
+                    style={[
+                      styles.button, {marginVertical: 8}
+                    ]}
+                  >
+                    reset database
+                  </ThemedButton>
+                </Pressable>
             </View>
           </View>
         </ScrollView>

@@ -1,14 +1,18 @@
+import TabBar from "@/components/TabBar";
 import { Stack } from "expo-router";
+import { View } from "react-native";
 
 export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false, // Cache les en-têtes pour toutes les pages
-      }}
-    >
-      {/* Assurez-vous que seuls des Stack.Screen sont définis ici */}
-      <Stack.Screen name="index" /> {/* Fichier app/index.js */}
-    </Stack>
+    <View style={{ flex: 1 }}>
+      <Stack
+        screenOptions={{
+          headerShown: false, // Cacher les headers
+        }}
+      />
+      <View>
+        <TabBar />
+      </View>
+    </View>
   );
 }

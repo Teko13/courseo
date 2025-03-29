@@ -5,8 +5,9 @@ export default function useColor() {
         grayDark: "#333333",
         grayLight: "#4F4F4F",
         danger: "#EE1D52",
-        background: "#161616",
-        backgroundVariant: "#2b2b2b",
+        background: "#111217",
+        backgroundVariant: "#1B1D22",
+        inputBackgroundColor: "#121417",
         black: "#000000"
     }
     return UIColors;
