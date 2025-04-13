@@ -5,6 +5,7 @@ export default function useColor() {
         grayDark: "#333333",
         grayLight: "#4F4F4F",
         danger: "#EE1D52",
+        success: '#4CAF50',
         background: "#111217",
         backgroundVariant: "#1B1D22",
         inputBackgroundColor: "#121417",

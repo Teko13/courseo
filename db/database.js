@@ -29,6 +29,7 @@ const initDB = async () => {
                 quantity INTEGER NOT NULL,
                 price REAL,
                 isWeighable INTEGER NOT NULL,
+                isAdd INTEGER NOT NULL,
                 list_id INTEGER,
                 FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE
             )

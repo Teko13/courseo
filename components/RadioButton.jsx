@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
     },
     selectedIndicator: {
         backgroundColor: colors.primary,
-        width: 20,
-        height: 20,
+        width: 10,
+        height: 10,
         borderRadius: 100
     }
 })

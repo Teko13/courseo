@@ -26,11 +26,11 @@ export const getListById = async (id) => {
 export const createList = async (name) => {
     const db = await initDB();
     try {
-        const result = await db.runAsync(
-            `INSERT INTO lists (name) VALUES (?)`,
-            [name]
-        );
-        return result.insertId;
+        await db.runAsync(`INSERT INTO lists (name) VALUES (?)`, [name]);
+
+        const result = await db.getFirstAsync(`SELECT last_insert_rowid() as id`);
+        console.log('Liste créée avec ID:', result.id);
+        return result.id;
     } catch (error) {
         console.error('Erreur lors de la création de la liste :', error);
         throw error;
@@ -91,12 +91,12 @@ export const getProductById = async (id) => {
     }
 };
 
-export const createProduct = async ({ name, quantity, price, isWeighable, listId }) => {
+export const createProduct = async ({ name, quantity, price, isWeighable, listId, isAdd }) => {
     const db = await initDB();
     try {
         const result = await db.runAsync(
-            `INSERT INTO products (name, quantity, price, isWeighable, list_id) VALUES (?, ?, ?, ?, ?)`,
-            [name, quantity, price, isWeighable ? 1 : 0, listId]
+            `INSERT INTO products (name, quantity, price, isWeighable, list_id, isAdd) VALUES (?, ?, ?, ?, ?, ?)`,
+            [name, quantity, price, isWeighable ? 1 : 0, listId, isAdd ? 1 : 0]
         );
         return result.insertId;
     } catch (error) {
@@ -105,12 +105,12 @@ export const createProduct = async ({ name, quantity, price, isWeighable, listId
     }
 };
 
-export const updateProduct = async (id, { name, quantity, price, isWeighable, listId }) => {
+export const updateProduct = async (id, { name, quantity, price, isWeighable, listId, isAdd }) => {
     const db = await initDB();
     try {
-        const result = await db.execAsync(
-            `UPDATE products SET name = ?, quantity = ?, price = ?, isWeighable = ?, list_id = ? WHERE id = ?`,
-            [name, quantity, price, isWeighable ? 1 : 0, listId, id]
+        const result = await db.runAsync(
+            `UPDATE products SET name = ?, quantity = ?, price = ?, isWeighable = ?, list_id = ?, isAdd = ? WHERE id = ?`,
+            [name, quantity, price, isWeighable ? 1 : 0, listId, isAdd ? 1 : 0, id]
         );
         return result.rowsAffected;
     } catch (error) {
