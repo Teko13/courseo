@@ -3,7 +3,7 @@ import { ThemedButton } from "@/components/ThemedButton";
 import ThemedText from "@/components/ThemedText";
 import useColor from "@/hook/useColor";
 import { Link } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Image,
   Pressable,
@@ -14,6 +14,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Keyboard,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Card from "@/components/Card";
@@ -24,14 +26,46 @@ const colors = useColor();
 export default function Index() {
   const router = useRouter();
   const [listName, setListName] = useState("");
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e) => {
+        setKeyboardVisible(true);
+        setKeyboardHeight(e.endCoordinates.height);
+      }
+    );
+    
+    const keyboardWillHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+        setKeyboardHeight(0);
+      }
+    );
+
+    return () => {
+      keyboardWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <ScrollView 
+          contentContainerStyle={[
+            styles.scrollViewContent,
+            keyboardVisible && { paddingBottom: keyboardHeight + 20 }
+          ]}
+          keyboardShouldPersistTaps="handled"
+        >
           {/* Header */}
           <View style={styles.header}>
             <ThemedText color="primary" variant="heading1" style={styles.headerTitle}>
@@ -50,10 +84,12 @@ export default function Index() {
                   Nouvelle Liste
                 </ThemedText>
 
-                <Image
-                  source={require("@/assets/images/courseo-home-ill.png")}
-                  style={styles.image}
-                />
+                {!keyboardVisible && (
+                  <Image
+                    source={require("@/assets/images/courseo-home-ill.png")}
+                    style={styles.image}
+                  />
+                )}
 
                 <View style={styles.inputContainer}>
                   <View style={styles.inputWrapper}>

@@ -1,5 +1,5 @@
 import ThemedText from "@/components/ThemedText";
-import { getLists } from "@/db/query";
+import { getLists, resetDatabase } from "@/db";
 import useColor from "@/hook/useColor";
 import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -7,7 +7,6 @@ import { StyleSheet, Text, View, SafeAreaView, Pressable, FlatList, Image, Alert
 import { Ionicons } from "@expo/vector-icons";
 import Card from "@/components/Card";
 import { ThemedButton } from "@/components/ThemedButton";
-import { resetDatabase } from "@/db/database";
 
 const colors = useColor();
 export default function Archive() {

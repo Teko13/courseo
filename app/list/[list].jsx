@@ -3,7 +3,7 @@ import { ProductCard } from "@/components/Product";
 import RadioButton from "@/components/RadioButton";
 import { ThemedButton } from "@/components/ThemedButton";
 import ThemedText from "@/components/ThemedText";
-import { createProduct, deleteProduct, getProducts, createList, getListById, updateProduct } from "@/db/query";
+import { createProduct, deleteProduct, getProducts, createList, getListById, updateProduct, deleteList } from "@/db";
 import useColor from "@/hook/useColor";
 import { useLocalSearchParams, router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -187,6 +187,33 @@ export default function List() {
         });
     }
 
+    // Fonction pour supprimer la liste
+    const handleDeleteList = () => {
+        Alert.alert(
+            "Supprimer la liste",
+            "Êtes-vous sûr de vouloir supprimer cette liste ? Cette action est irréversible.",
+            [
+                {
+                    text: "Annuler",
+                    style: "cancel"
+                },
+                {
+                    text: "Supprimer",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            await deleteList(list.id);
+                            router.replace("/archive");
+                        } catch (error) {
+                            console.error("Erreur lors de la suppression de la liste :", error);
+                            Alert.alert("Erreur", "Impossible de supprimer la liste. Veuillez réessayer.");
+                        }
+                    }
+                }
+            ]
+        );
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView 
@@ -201,7 +228,9 @@ export default function List() {
                     <ThemedText variant="heading1" style={styles.headerTitle}>
                         {list?.name || "Chargement..."}
                     </ThemedText>
-                    <View style={styles.headerRight} />
+                    <Pressable onPress={handleDeleteList} style={styles.deleteButton}>
+                        <Ionicons name="trash-outline" size={24} color={colors.error} />
+                    </Pressable>
                 </View>
 
                 <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -374,8 +403,8 @@ const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center',
     },
-    headerRight: {
-        width: 34, // Même largeur que le bouton retour pour centrer le titre
+    deleteButton: {
+        padding: 5,
     },
     scrollContent: {
         flexGrow: 1,
